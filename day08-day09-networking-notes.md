@@ -1,0 +1,1050 @@
+# Networking Lab — Day 08 & Day 09
+
+# Day 08 — Networking Fundamentals & OSI Model
+
+## Objective
+
+Build a foundation in computer networking by understanding the OSI model, basic network communication, IP addressing, protocols, and packet flow.
+
+---
+
+# 1. OSI Model
+
+The OSI (Open Systems Interconnection) model divides network communication into seven conceptual layers.
+
+```text
+┌─────────────────────────────┐
+│ L7 — Application            │ → HTTP / DNS / SSH
+├─────────────────────────────┤
+│ L6 — Presentation           │ → TLS
+├─────────────────────────────┤
+│ L5 — Session                │ → RPC
+├─────────────────────────────┤
+│ L4 — Transport              │ → TCP / UDP
+├─────────────────────────────┤
+│ L3 — Network                │ → IP
+├─────────────────────────────┤
+│ L2 — Data Link              │ → Ethernet
+├─────────────────────────────┤
+│ L1 — Physical               │ → Ethernet PHY
+└─────────────────────────────┘
+```
+
+## Layer 7 — Application
+
+Provides network services used directly by applications.
+
+Examples:
+- HTTP
+- DNS
+- SSH
+
+## Layer 6 — Presentation
+
+Handles data representation, encoding, encryption, and related transformations.
+
+Example:
+- TLS
+
+## Layer 5 — Session
+
+Manages communication sessions between applications.
+
+Example:
+- RPC
+
+## Layer 4 — Transport
+
+Provides end-to-end communication between applications.
+
+Examples:
+- TCP
+- UDP
+
+## Layer 3 — Network
+
+Handles logical addressing and routing between networks.
+
+Example:
+- IP
+
+## Layer 2 — Data Link
+
+Handles local network communication using frames and MAC addresses.
+
+Example:
+- Ethernet
+
+## Layer 1 — Physical
+
+Transmits raw bits through the physical medium.
+
+Examples:
+- Ethernet physical layer
+- Radio signals
+
+---
+
+# 2. TCP/IP Mental Model
+
+```text
+Application
+     ↓
+TCP / UDP
+     ↓
+IP
+     ↓
+Ethernet / Wi-Fi
+     ↓
+Physical Medium
+```
+
+When accessing a website:
+
+```text
+Domain
+  ↓
+DNS
+  ↓
+IP Address
+  ↓
+Routing
+  ↓
+TCP / UDP
+  ↓
+Port
+  ↓
+Application Protocol
+  ↓
+Request / Response
+```
+
+---
+
+# 3. Important Networking Concepts
+
+## IP Address
+
+An IP address is a logical address used to identify a network interface and help route traffic.
+
+Example:
+
+```text
+192.168.1.20
+```
+
+## MAC Address
+
+A MAC address is associated with a network interface and is primarily used for Layer 2 communication on the local network.
+
+Example:
+
+```text
+08:00:27:12:34:56
+```
+
+Simple distinction:
+
+```text
+IP  → Layer 3 → Routing
+MAC → Layer 2 → Local network
+```
+
+## Subnet Mask
+
+A subnet mask determines which portion of an IP address represents the network and which portion represents the host.
+
+Example:
+
+```text
+192.168.1.20/24
+```
+
+Equivalent subnet mask:
+
+```text
+255.255.255.0
+```
+
+## Default Gateway
+
+The default gateway is normally the router used to reach networks outside the local subnet.
+
+## ARP
+
+ARP helps discover the MAC address associated with a known IPv4 address on the local network.
+
+```text
+Known IP
+   ↓
+  ARP
+   ↓
+MAC Address
+```
+
+Useful command:
+
+```bash
+ip neigh
+```
+
+## DHCP
+
+DHCP automatically provides network configuration such as IP address, subnet mask, default gateway, and DNS server.
+
+DORA:
+
+```text
+Discover
+   ↓
+Offer
+   ↓
+Request
+   ↓
+Acknowledge
+```
+
+## DNS
+
+DNS translates human-readable domain names into IP addresses.
+
+```text
+google.com
+     ↓
+    DNS
+     ↓
+IP address
+```
+
+Useful commands:
+
+```bash
+dig google.com
+nslookup google.com
+```
+
+---
+
+# 4. TCP vs UDP
+
+## TCP
+
+TCP is connection-oriented and provides reliable, ordered delivery.
+
+Characteristics:
+- Connection-oriented
+- Reliable
+- Ordered
+- Uses acknowledgments
+- Supports retransmission
+
+Examples:
+- HTTPS
+- SSH
+
+## UDP
+
+UDP is connectionless and has lower overhead.
+
+Characteristics:
+- Connectionless
+- Lower overhead
+- No TCP-style delivery guarantee
+- No TCP-style ordering guarantee
+
+Examples:
+- DNS
+- DHCP
+
+---
+
+# 5. TCP Three-Way Handshake
+
+```text
+Client                    Server
+
+   SYN ───────────────────►
+
+       ◄──────────────── SYN-ACK
+
+   ACK ───────────────────►
+
+       Connection established
+```
+
+Memory:
+
+```text
+SYN → SYN-ACK → ACK
+```
+
+---
+
+# 6. Common Ports
+
+| Port | Service |
+|---:|---|
+| 21 | FTP |
+| 22 | SSH |
+| 23 | Telnet |
+| 25 | SMTP |
+| 53 | DNS |
+| 80 | HTTP |
+| 443 | HTTPS |
+| 3389 | RDP |
+
+---
+
+# 7. Networking Devices
+
+## Switch
+
+A switch primarily connects devices within a LAN and forwards Ethernet frames using MAC addresses.
+
+## Router
+
+A router connects different IP networks and forwards packets based on IP addressing and routing information.
+
+## Firewall
+
+A firewall controls network traffic according to security rules.
+
+---
+
+# 8. NAT
+
+NAT stands for Network Address Translation.
+
+It commonly allows devices using private IP addresses to communicate through a public IP address.
+
+```text
+Laptop      192.168.1.10
+Phone       192.168.1.11
+                 │
+                 ▼
+                NAT
+                 │
+                 ▼
+             Public IP
+                 │
+                 ▼
+              Internet
+```
+
+---
+
+# 9. Practical Commands
+
+```bash
+ip a
+ip -br a
+ip route
+ip neigh
+ss -tulnp
+ping -c 4 8.8.8.8
+dig google.com
+nslookup google.com
+curl -v http://example.com
+curl -v https://example.com
+```
+
+---
+
+# 10. Wireshark
+
+Wireshark is a network protocol analyzer used to capture and inspect network traffic.
+
+Basic filters:
+
+```text
+dns
+tcp
+udp
+icmp
+http
+tls
+tcp.port == 80
+tcp.port == 443
+```
+
+A packet may contain several protocol layers:
+
+```text
+Ethernet
+   ↓
+IP
+   ↓
+TCP
+   ↓
+TLS
+   ↓
+Application Data
+```
+
+---
+
+# 11. Practical Exercises
+
+1. Run `ip -br a` and identify the active interface.
+2. Run `ip route` and identify the default gateway.
+3. Run `ip neigh` and inspect local IP-to-MAC mappings.
+4. Run `ping -c 4 8.8.8.8`.
+5. Run `dig google.com`.
+6. Open Wireshark and capture traffic while browsing a website.
+7. Apply `dns`, `tcp`, `tls`, and `http` filters.
+
+---
+
+# 12. Key Takeaways
+
+```text
+OSI
+ ↓
+Layers describe network communication
+
+IP
+ ↓
+Logical addressing / routing
+
+MAC
+ ↓
+Local Layer 2 communication
+
+TCP / UDP
+ ↓
+Transport communication
+
+Port
+ ↓
+Application/service endpoint
+
+DNS
+ ↓
+Domain → IP
+
+DHCP
+ ↓
+Network configuration
+
+Router
+ ↓
+Connects networks
+
+Switch
+ ↓
+Connects devices within a LAN
+
+Wireshark
+ ↓
+Observe and analyze packets
+```
+
+## Goal
+
+Build a strong networking foundation that can later be applied to:
+
+- Network security
+- SOC analysis
+- Web security
+- API security
+- Vulnerability assessment
+- Packet analysis
+- Incident investigation
+
+
+---
+
+# Day 09 — IPv4 Addressing & Subnetting
+
+## Objective
+
+Understand IPv4 addressing, subnet masks, CIDR notation, private vs public IP addresses, and manually divide a `/24` network into four equal subnets.
+
+---
+
+# 1. IPv4 Addressing
+
+IPv4 addresses are 32-bit addresses normally written as four decimal octets.
+
+Example:
+
+```text
+192.168.1.10
+```
+
+Each octet represents 8 bits:
+
+```text
+192 . 168 . 1 . 10
+ 8     8     8    8 bits
+```
+
+Total:
+
+```text
+8 + 8 + 8 + 8 = 32 bits
+```
+
+---
+
+# 2. Network and Host Portions
+
+An IPv4 address contains a network portion and a host portion.
+
+The subnet mask or CIDR prefix determines where the network portion ends.
+
+Example:
+
+```text
+192.168.1.10/24
+```
+
+`/24` means:
+
+```text
+First 24 bits → Network
+Remaining 8 bits → Host
+```
+
+Subnet mask:
+
+```text
+255.255.255.0
+```
+
+---
+
+# 3. CIDR Notation
+
+CIDR stands for Classless Inter-Domain Routing.
+
+Examples:
+
+```text
+/8
+/16
+/24
+/25
+/26
+/27
+/28
+```
+
+The number represents how many bits belong to the network prefix.
+
+For example:
+
+```text
+/24 = 255.255.255.0
+```
+
+---
+
+# 4. Private IPv4 Address Ranges
+
+| Range | CIDR |
+|---|---|
+| 10.0.0.0 – 10.255.255.255 | 10.0.0.0/8 |
+| 172.16.0.0 – 172.31.255.255 | 172.16.0.0/12 |
+| 192.168.0.0 – 192.168.255.255 | 192.168.0.0/16 |
+
+Private addresses are commonly used inside local networks.
+
+Examples:
+
+```text
+192.168.1.20
+10.0.0.5
+172.16.10.20
+```
+
+Public IP addresses are generally globally routable addresses used on the public Internet.
+
+---
+
+# 5. Subnetting
+
+Subnetting divides one network into smaller networks.
+
+Starting network:
+
+```text
+192.168.1.0/24
+```
+
+Goal:
+
+```text
+4 equal subnets
+```
+
+---
+
+# 6. Step 1 — Determine Required Bits
+
+We need 4 subnets.
+
+Formula:
+
+```text
+2^n = number of subnets
+```
+
+For 4 subnets:
+
+```text
+2^2 = 4
+```
+
+Therefore, borrow 2 host bits.
+
+Original prefix:
+
+```text
+/24
+```
+
+New prefix:
+
+```text
+/24 + 2 = /26
+```
+
+---
+
+# 7. Step 2 — Determine Subnet Mask
+
+A `/26` subnet mask is:
+
+```text
+255.255.255.192
+```
+
+Binary:
+
+```text
+11111111.11111111.11111111.11000000
+```
+
+The final octet is:
+
+```text
+128 + 64 = 192
+```
+
+Therefore:
+
+```text
+255.255.255.192
+```
+
+---
+
+# 8. Step 3 — Determine Block Size
+
+Block size:
+
+```text
+256 - subnet mask value
+```
+
+For `/26`:
+
+```text
+256 - 192 = 64
+```
+
+Therefore, subnet addresses increase by 64:
+
+```text
+0
+64
+128
+192
+```
+
+---
+
+# 9. Address Capacity
+
+Each `/26` subnet contains:
+
+```text
+2^(32-26)
+= 2^6
+= 64 total addresses
+```
+
+Usable host addresses:
+
+```text
+64 - 2 = 62
+```
+
+Two addresses are reserved for:
+
+- Network address
+- Broadcast address
+
+---
+
+# 10. Four Equal Subnets
+
+## Subnet 1
+
+Network:
+
+```text
+192.168.1.0/26
+```
+
+Broadcast:
+
+```text
+192.168.1.63
+```
+
+Usable range:
+
+```text
+192.168.1.1 - 192.168.1.62
+```
+
+Subnet mask:
+
+```text
+255.255.255.192
+```
+
+---
+
+## Subnet 2
+
+Network:
+
+```text
+192.168.1.64/26
+```
+
+Broadcast:
+
+```text
+192.168.1.127
+```
+
+Usable range:
+
+```text
+192.168.1.65 - 192.168.1.126
+```
+
+Subnet mask:
+
+```text
+255.255.255.192
+```
+
+---
+
+## Subnet 3
+
+Network:
+
+```text
+192.168.1.128/26
+```
+
+Broadcast:
+
+```text
+192.168.1.191
+```
+
+Usable range:
+
+```text
+192.168.1.129 - 192.168.1.190
+```
+
+Subnet mask:
+
+```text
+255.255.255.192
+```
+
+---
+
+## Subnet 4
+
+Network:
+
+```text
+192.168.1.192/26
+```
+
+Broadcast:
+
+```text
+192.168.1.255
+```
+
+Usable range:
+
+```text
+192.168.1.193 - 192.168.1.254
+```
+
+Subnet mask:
+
+```text
+255.255.255.192
+```
+
+---
+
+# 11. Complete Subnetting Table
+
+| Subnet | Network Address | Broadcast Address | Usable Range | Subnet Mask |
+|---|---|---|---|---|
+| 1 | 192.168.1.0/26 | 192.168.1.63 | 192.168.1.1 – 192.168.1.62 | 255.255.255.192 |
+| 2 | 192.168.1.64/26 | 192.168.1.127 | 192.168.1.65 – 192.168.1.126 | 255.255.255.192 |
+| 3 | 192.168.1.128/26 | 192.168.1.191 | 192.168.1.129 – 192.168.1.190 | 255.255.255.192 |
+| 4 | 192.168.1.192/26 | 192.168.1.255 | 192.168.1.193 – 192.168.1.254 | 255.255.255.192 |
+
+---
+
+# 12. Visual Representation
+
+```text
+192.168.1.0/24
+│
+├── 192.168.1.0/26
+│   ├── Network:   192.168.1.0
+│   ├── Hosts:     .1 - .62
+│   └── Broadcast: .63
+│
+├── 192.168.1.64/26
+│   ├── Network:   192.168.1.64
+│   ├── Hosts:     .65 - .126
+│   └── Broadcast: .127
+│
+├── 192.168.1.128/26
+│   ├── Network:   192.168.1.128
+│   ├── Hosts:     .129 - .190
+│   └── Broadcast: .191
+│
+└── 192.168.1.192/26
+    ├── Network:   192.168.1.192
+    ├── Hosts:     .193 - .254
+    └── Broadcast: .255
+```
+
+---
+
+# 13. Subnetting Formulas
+
+## Number of Subnets
+
+```text
+2^borrowed_bits
+```
+
+Example:
+
+```text
+2^2 = 4 subnets
+```
+
+## Addresses per Subnet
+
+```text
+2^host_bits
+```
+
+For `/26`:
+
+```text
+32 - 26 = 6 host bits
+
+2^6 = 64 addresses
+```
+
+## Usable Hosts
+
+```text
+2^host_bits - 2
+```
+
+Therefore:
+
+```text
+64 - 2 = 62 usable hosts
+```
+
+---
+
+# 14. Quick Subnet Reference
+
+| CIDR | Subnet Mask | Total Addresses | Usable Hosts |
+|---|---|---:|---:|
+| /24 | 255.255.255.0 | 256 | 254 |
+| /25 | 255.255.255.128 | 128 | 126 |
+| /26 | 255.255.255.192 | 64 | 62 |
+| /27 | 255.255.255.224 | 32 | 30 |
+| /28 | 255.255.255.240 | 16 | 14 |
+| /29 | 255.255.255.248 | 8 | 6 |
+| /30 | 255.255.255.252 | 4 | 2 |
+
+---
+
+# 15. Practical Subnetting Method
+
+When asked to divide a network into equal subnets:
+
+```text
+1. Identify original prefix
+        ↓
+2. Determine required number of subnets
+        ↓
+3. Calculate borrowed bits
+        ↓
+4. Find new prefix
+        ↓
+5. Determine subnet mask
+        ↓
+6. Calculate block size
+        ↓
+7. List network addresses
+        ↓
+8. Find broadcast addresses
+        ↓
+9. Find usable host ranges
+```
+
+Example:
+
+```text
+192.168.1.0/24
+       ↓
+4 subnets
+       ↓
+2 borrowed bits
+       ↓
+/26
+       ↓
+255.255.255.192
+       ↓
+Block size = 64
+       ↓
+0, 64, 128, 192
+```
+
+---
+
+# 16. Practical Exercises
+
+## Exercise 1 — Private vs Public
+
+Identify whether these addresses are private or public:
+
+```text
+192.168.1.10
+10.10.10.10
+172.20.5.10
+8.8.8.8
+```
+
+## Exercise 2 — CIDR Conversion
+
+Convert these prefixes into subnet masks:
+
+```text
+/24
+/25
+/26
+/27
+```
+
+## Exercise 3 — Subnet a /24
+
+For:
+
+```text
+192.168.10.0/24
+```
+
+create four equal subnets.
+
+## Exercise 4 — Find the Second Subnet
+
+For:
+
+```text
+10.0.0.0/24
+```
+
+calculate the network address, broadcast address, and usable host range of the second `/26` subnet.
+
+---
+
+# 17. Key Takeaways
+
+```text
+IPv4
+ ↓
+32-bit logical address
+
+Subnet Mask / CIDR
+ ↓
+Defines network and host portions
+
+Subnetting
+ ↓
+Divides one network into smaller networks
+
+/24
+ ↓
+256 total addresses
+
+/26
+ ↓
+64 total addresses
+62 usable hosts
+
+192.168.1.0/24
+ ↓
+4 equal /26 networks
+```
+
+Final four subnets:
+
+```text
+192.168.1.0/26
+192.168.1.64/26
+192.168.1.128/26
+192.168.1.192/26
+```
+
+Each subnet has:
+
+```text
+64 total addresses
+62 usable host addresses
+255.255.255.192 subnet mask
+```
+
+---
+
+# Goal
+
+Build the ability to look at an IPv4 address and CIDR prefix and determine:
+
+- Network address
+- Broadcast address
+- Usable host range
+- Number of subnets
+- Number of hosts
+- Subnet mask
+- Whether an address is private or public
+
+These skills form the foundation for routing, network security, cloud networking, firewall configuration, and cybersecurity labs.
